@@ -18,14 +18,22 @@ jobs:
         with:
           dotnet-version: 8.0.x
 
+      - name: Locate the solution
+        id: find
+        run: |
+          SLN=$(find . -name "RaceDay.sln" -not -path "*/Part2-API/*" | head -n 1)
+          test -n "$SLN" || { echo "RaceDay.sln was not found in the repository"; exit 1; }
+          echo "Using solution: $SLN"
+          echo "sln=$SLN" >> "$GITHUB_OUTPUT"
+
       - name: Restore dependencies (API, MVC and tests)
-        run: dotnet restore RaceDay.sln
+        run: dotnet restore "${{ steps.find.outputs.sln }}"
 
       - name: Build (API and MVC)
-        run: dotnet build RaceDay.sln --configuration Release --no-restore
+        run: dotnet build "${{ steps.find.outputs.sln }}" --configuration Release --no-restore
 
       - name: Run unit tests
-        run: dotnet test RaceDay.sln --configuration Release --no-build --verbosity normal
+        run: dotnet test "${{ steps.find.outputs.sln }}" --configuration Release --no-build --verbosity normal
 
   docker:
     name: Build Docker images
@@ -35,8 +43,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Build MVC image
-        run: docker build -t raceday-web ./RaceDay.Web
-
-      - name: Build API image
-        run: docker build -t raceday-api ./RaceDay.Api
+      - name: Build MVC and API images
+        run: |
+          SLN=$(find . -name "RaceDay.sln" -not -path "*/Part2-API/*" | head -n 1)
+          DIR=$(dirname "$SLN")
+          docker build -t raceday-web "$DIR/RaceDay.Web"
+          docker build -t raceday-api "$DIR/RaceDay.Api"
