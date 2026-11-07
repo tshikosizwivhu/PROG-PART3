@@ -1,0 +1,43 @@
+@model ProfileViewModel
+@{
+    ViewData["Title"] = "My profile";
+}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card form-card">
+            <div class="card-body">
+                <h2 class="mb-3">My profile</h2>
+                <div class="text-center mb-3">
+                    @if (!string.IsNullOrEmpty(Model.ProfilePictureUrl))
+                    {
+                        <img src="@Model.ProfilePictureUrl" alt="Profile picture" class="profile-picture" />
+                    }
+                    else
+                    {
+                        <div class="profile-picture profile-picture-empty">@(Model.FullName.Length > 0 ? Model.FullName.Substring(0, 1).ToUpperInvariant() : "?")</div>
+                    }
+                </div>
+                <form asp-controller="Participant" asp-action="Profile" method="post" enctype="multipart/form-data">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+                    <input type="hidden" asp-for="ProfilePictureUrl" />
+                    <div class="mb-3">
+                        <label asp-for="FullName" class="form-label"></label>
+                        <input asp-for="FullName" class="form-control" />
+                        <span asp-validation-for="FullName" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label"></label>
+                        <input asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Picture" class="form-label"></label>
+                        <input asp-for="Picture" type="file" class="form-control" accept="image/png,image/jpeg,image/webp,image/gif" />
+                        <div class="form-text">JPG, PNG, WEBP or GIF, up to 5 MB.</div>
+                    </div>
+                    <button type="submit" class="btn rd-btn w-100">Save changes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

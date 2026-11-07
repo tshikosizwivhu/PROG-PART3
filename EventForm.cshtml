@@ -1,0 +1,70 @@
+@model EventFormViewModel
+@{
+    var isEdit = Model.EventId.HasValue;
+    var formAction = isEdit ? "EditEvent" : "CreateEvent";
+    ViewData["Title"] = isEdit ? "Edit event" : "Create event";
+}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card form-card">
+            <div class="card-body">
+                <h2 class="mb-3">@ViewData["Title"]</h2>
+                <form asp-controller="Organiser" asp-action="@formAction" method="post" enctype="multipart/form-data">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+                    <input type="hidden" asp-for="EventId" />
+                    <input type="hidden" asp-for="CurrentBannerUrl" />
+                    <div class="mb-3">
+                        <label asp-for="EventName" class="form-label"></label>
+                        <input asp-for="EventName" class="form-control" />
+                        <span asp-validation-for="EventName" class="text-danger"></span>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="EventType" class="form-label"></label>
+                            <select asp-for="EventType" class="form-select">
+                                <option value="">Choose...</option>
+                                <option value="Run">Run</option>
+                                <option value="Walk">Walk</option>
+                                <option value="Cycle">Cycle</option>
+                            </select>
+                            <span asp-validation-for="EventType" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="EventDate" class="form-label"></label>
+                            <input asp-for="EventDate" type="date" class="form-control" />
+                            <span asp-validation-for="EventDate" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="DistanceKm" class="form-label"></label>
+                            <input asp-for="DistanceKm" type="number" step="0.1" class="form-control" />
+                            <span asp-validation-for="DistanceKm" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Location" class="form-label"></label>
+                        <input asp-for="Location" class="form-control" />
+                        <span asp-validation-for="Location" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Description" class="form-label"></label>
+                        <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Banner" class="form-label"></label>
+                        @if (!string.IsNullOrEmpty(Model.CurrentBannerUrl))
+                        {
+                            <div class="mb-2"><img src="@Model.CurrentBannerUrl" alt="Current banner" class="banner-preview" /></div>
+                        }
+                        <input asp-for="Banner" type="file" class="form-control" accept="image/png,image/jpeg,image/webp,image/gif" />
+                        <div class="form-text">JPG, PNG, WEBP or GIF, up to 5 MB. Stored in Azure Blob Storage through the API.</div>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn rd-btn">Save event</button>
+                        <a asp-action="Events" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

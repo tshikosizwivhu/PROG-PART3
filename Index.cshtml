@@ -1,0 +1,43 @@
+@model HomeViewModel
+@{
+    ViewData["Title"] = "Upcoming events";
+}
+
+<section class="rd-hero mb-4">
+    <h1>Find your next race</h1>
+    <p>Browse upcoming runs, walks and cycle tours across South Africa and enrol in minutes.</p>
+</section>
+
+<form method="get" asp-controller="Home" asp-action="Index" class="row g-2 align-items-end filter-bar mb-4">
+    <div class="col-md-3">
+        <label class="form-label" for="eventType">Event type</label>
+        <select class="form-select" id="eventType" name="eventType">
+            <option value="">All types</option>
+            <option value="Run" selected="@(Model.EventType == "Run")">Run</option>
+            <option value="Walk" selected="@(Model.EventType == "Walk")">Walk</option>
+            <option value="Cycle" selected="@(Model.EventType == "Cycle")">Cycle</option>
+        </select>
+    </div>
+    <div class="col-md-5">
+        <label class="form-label" for="location">Location</label>
+        <input class="form-control" id="location" name="location" value="@Model.Location" placeholder="e.g. Pretoria" />
+    </div>
+    <div class="col-md-4 d-flex gap-2">
+        <button type="submit" class="btn rd-btn">Filter</button>
+        <a asp-action="Index" class="btn btn-outline-secondary">Clear</a>
+    </div>
+</form>
+
+@if (Model.Events.Count == 0)
+{
+    <div class="empty-state">No upcoming events match your search.</div>
+}
+else
+{
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        @foreach (var ev in Model.Events)
+        {
+            <div class="col">@await Html.PartialAsync("_EventCard", ev)</div>
+        }
+    </div>
+}

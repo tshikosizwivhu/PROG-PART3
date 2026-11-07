@@ -1,0 +1,104 @@
+/* RaceDay brand: deep navy, energetic orange, crisp white. Used on every page. */
+:root {
+    --rd-navy: #0b1f3a;
+    --rd-navy-2: #14305a;
+    --rd-orange: #ff6b1a;
+    --rd-orange-dark: #e25600;
+    --rd-bg: #f4f6fa;
+    --rd-text: #172033;
+    --bs-body-font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    --bs-body-color: var(--rd-text);
+    --bs-link-color: var(--rd-orange-dark);
+    --bs-link-hover-color: var(--rd-orange);
+}
+
+body {
+    background: var(--rd-bg);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main { flex: 1; }
+
+h1, h2, h3, h4, h5, .rd-brand {
+    font-family: 'Barlow Condensed', 'Inter', sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
+}
+
+/* Navigation */
+.rd-navbar { background: var(--rd-navy); border-bottom: 4px solid var(--rd-orange); }
+.rd-brand { color: #fff !important; font-size: 1.7rem; font-style: italic; }
+.rd-brand span { color: var(--rd-orange); }
+.rd-navbar .nav-link { color: rgba(255, 255, 255, 0.85); font-weight: 500; }
+.rd-navbar .nav-link:hover { color: var(--rd-orange); }
+.rd-avatar { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 2px solid var(--rd-orange); }
+.rd-role-badge { background: var(--rd-orange); color: #fff; font-weight: 600; }
+
+/* Buttons */
+.rd-btn { background: var(--rd-orange); border-color: var(--rd-orange); color: #fff; font-weight: 600; }
+.rd-btn:hover, .rd-btn:focus { background: var(--rd-orange-dark); border-color: var(--rd-orange-dark); color: #fff; }
+
+/* Hero and filter bar */
+.rd-hero {
+    background: linear-gradient(120deg, var(--rd-navy) 0%, var(--rd-navy-2) 60%, var(--rd-orange) 140%);
+    color: #fff;
+    border-radius: 16px;
+    padding: 2.5rem 2rem;
+}
+.rd-hero h1 { font-size: 2.6rem; margin-bottom: 0.5rem; }
+.rd-hero p { margin: 0; font-size: 1.1rem; opacity: 0.9; }
+.filter-bar { background: #fff; border-radius: 12px; padding: 1rem; margin-left: 0; margin-right: 0; box-shadow: 0 1px 3px rgba(11, 31, 58, 0.08); }
+
+/* Event cards */
+.event-card { border: 0; border-radius: 14px; overflow: hidden; box-shadow: 0 2px 8px rgba(11, 31, 58, 0.10); transition: transform 0.15s ease; }
+.event-card:hover { transform: translateY(-3px); }
+.event-banner { width: 100%; height: 170px; object-fit: cover; display: block; }
+.detail-banner { width: 100%; height: 280px; object-fit: cover; display: block; }
+.event-banner-empty {
+    display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, var(--rd-navy), var(--rd-navy-2));
+    color: var(--rd-orange);
+    font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 2rem; text-transform: uppercase;
+}
+.banner-preview { max-height: 120px; border-radius: 8px; }
+
+.type-pill { display: inline-block; padding: 0.15rem 0.7rem; border-radius: 999px; font-size: 0.75rem; font-weight: 600; color: #fff; text-transform: uppercase; }
+.type-run { background: var(--rd-orange); }
+.type-walk { background: #1b8a5a; }
+.type-cycle { background: #2563eb; }
+
+.fact-label { font-size: 0.75rem; text-transform: uppercase; color: #6b7280; letter-spacing: 0.05em; }
+.fact-value { font-size: 1.1rem; font-weight: 600; }
+
+/* Tables and cards */
+.rd-table { background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(11, 31, 58, 0.08); }
+.rd-table thead th { background: var(--rd-navy); color: #fff; font-weight: 600; border: 0; }
+.form-card { border: 0; border-radius: 14px; box-shadow: 0 2px 10px rgba(11, 31, 58, 0.10); }
+.form-card h2, .form-card h4 { color: var(--rd-navy); }
+.empty-state { background: #fff; border-radius: 12px; padding: 2rem; text-align: center; color: #6b7280; box-shadow: 0 1px 3px rgba(11, 31, 58, 0.08); }
+
+/* Dashboard */
+.stat-card { background: #fff; border-radius: 14px; padding: 1.25rem 1.5rem; border-left: 6px solid var(--rd-orange); box-shadow: 0 1px 4px rgba(11, 31, 58, 0.10); }
+.stat-number { font-family: 'Barlow Condensed', sans-serif; font-size: 2.8rem; font-weight: 700; color: var(--rd-navy); line-height: 1; }
+.stat-label { color: #6b7280; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.05em; }
+.count-pill { background: var(--rd-navy); color: #fff; border-radius: 999px; padding: 0.2rem 0.8rem; font-weight: 600; }
+.date-pill { background: #fff3ea; color: var(--rd-orange-dark); border-radius: 8px; padding: 0.25rem 0.7rem; font-weight: 600; }
+
+/* Enrolment status colours: green = Confirmed, amber = Pending, red = Cancelled */
+.status-badge { display: inline-block; padding: 0.25rem 0.75rem; border-radius: 999px; font-size: 0.8rem; font-weight: 600; }
+.status-confirmed { background: #d1f2df; color: #0f6b3a; }
+.status-pending { background: #ffe8b3; color: #8a5a00; }
+.status-cancelled { background: #fbd4d4; color: #9b1c1c; }
+.status-other { background: #e5e7eb; color: #374151; }
+
+/* Profile */
+.profile-picture { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 4px solid var(--rd-orange); }
+.profile-picture-empty {
+    display: inline-flex; align-items: center; justify-content: center;
+    background: var(--rd-navy); color: #fff; font-size: 3rem; font-family: 'Barlow Condensed', sans-serif;
+}
+
+.rd-footer { background: var(--rd-navy); color: rgba(255, 255, 255, 0.7); padding: 1rem 0; text-align: center; margin-top: 2rem; }

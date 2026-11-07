@@ -1,0 +1,99 @@
+@model EventDetailsViewModel
+@{
+    var ev = Model.Event;
+    var role = Context.Session.GetString(SessionKeys.Role);
+    var upcoming = ev.EventDate.Date >= DateTime.Today;
+    ViewData["Title"] = ev.EventName;
+}
+
+<div class="card mb-4 overflow-hidden">
+    @if (!string.IsNullOrEmpty(ev.BannerImageUrl))
+    {
+        <img src="@ev.BannerImageUrl" class="detail-banner" alt="@ev.EventName banner" />
+    }
+    else
+    {
+        <div class="detail-banner event-banner-empty"><span>@ev.EventType</span></div>
+    }
+    <div class="card-body">
+        <span class="type-pill type-@ev.EventType.ToLowerInvariant()">@ev.EventType</span>
+        <h1 class="mt-2">@ev.EventName</h1>
+        <div class="row g-3 my-2">
+            <div class="col-md-4"><div class="fact-label">Date</div><div class="fact-value">@Display.Date(ev.EventDate)</div></div>
+            <div class="col-md-4"><div class="fact-label">Location</div><div class="fact-value">@ev.Location</div></div>
+            <div class="col-md-4"><div class="fact-label">Distance</div><div class="fact-value">@ev.DistanceKm.ToString("0.#") km</div></div>
+        </div>
+        @if (!string.IsNullOrWhiteSpace(ev.Description))
+        {
+            <p class="mt-3">@ev.Description</p>
+        }
+    </div>
+</div>
+
+@if (ev.Route != null)
+{
+    <div class="card mb-4">
+        <div class="card-body">
+            <h4>Route information</h4>
+            @if (!string.IsNullOrWhiteSpace(ev.Route.RouteDescription)) { <p>@ev.Route.RouteDescription</p> }
+            <ul class="list-unstyled mb-0">
+                @if (ev.Route.ElevationGainM.HasValue) { <li><strong>Elevation gain:</strong> @ev.Route.ElevationGainM m</li> }
+                @if (!string.IsNullOrWhiteSpace(ev.Route.WeatherNotes)) { <li><strong>Weather:</strong> @ev.Route.WeatherNotes</li> }
+            </ul>
+        </div>
+    </div>
+}
+
+<h3 class="mb-3">Categories</h3>
+@if (ev.Categories.Count == 0)
+{
+    <div class="empty-state">No categories have been added for this event yet.</div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table rd-table align-middle">
+            <thead>
+                <tr><th>Category</th><th>Distance</th><th>Entry fee</th><th>Places</th><th></th></tr>
+            </thead>
+            <tbody>
+                @foreach (var category in ev.Categories)
+                {
+                    <tr>
+                        <td><strong>@category.CategoryName</strong></td>
+                        <td>@category.DistanceKm.ToString("0.#") km</td>
+                        <td>@Display.Money(category.EntryFee)</td>
+                        <td>@category.MaxParticipants</td>
+                        <td class="text-end">
+                            @if (role == Roles.Participant)
+                            {
+                                if (Model.EnrolledCategoryIds.Contains(category.CategoryId))
+                                {
+                                    <partial name="_StatusBadge" model="@("Confirmed")" />
+                                    <span class="ms-1">You are enrolled</span>
+                                }
+                                else if (!upcoming)
+                                {
+                                    <span class="text-muted">Event finished</span>
+                                }
+                                else
+                                {
+                                    <form asp-controller="Events" asp-action="Enrol" method="post" class="d-inline">
+                                        <input type="hidden" name="categoryId" value="@category.CategoryId" />
+                                        <input type="hidden" name="eventId" value="@ev.EventId" />
+                                        <button type="submit" class="btn rd-btn btn-sm">Enter event</button>
+                                    </form>
+                                }
+                            }
+                            else if (role == null)
+                            {
+                                <a asp-controller="Account" asp-action="Login" asp-route-returnUrl="@Context.Request.Path" class="btn btn-outline-secondary btn-sm">Log in to enrol</a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+<a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary mt-3">&larr; Back to events</a>

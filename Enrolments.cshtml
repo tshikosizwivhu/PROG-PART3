@@ -1,0 +1,31 @@
+@model EnrolmentsPageViewModel
+@{
+    ViewData["Title"] = "Enrolments";
+}
+<h1 class="mb-1">Enrolments</h1>
+<p class="text-muted mb-4">@Model.Event.EventName &middot; @Display.Date(Model.Event.EventDate)</p>
+
+@if (Model.Enrolments.Count == 0)
+{
+    <div class="empty-state">Nobody has enrolled for this event yet.</div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table rd-table align-middle">
+            <thead><tr><th>Participant</th><th>Category</th><th>Enrolled on</th><th>Status</th></tr></thead>
+            <tbody>
+                @foreach (var enrolment in Model.Enrolments)
+                {
+                    <tr>
+                        <td><strong>@enrolment.ParticipantName</strong></td>
+                        <td>@enrolment.CategoryName</td>
+                        <td>@Display.Date(enrolment.EnrolmentDate)</td>
+                        <td><partial name="_StatusBadge" model="@enrolment.Status" /></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+<a asp-action="Events" class="btn btn-outline-secondary mt-3">&larr; Back to events</a>

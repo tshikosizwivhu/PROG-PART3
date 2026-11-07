@@ -1,0 +1,57 @@
+@model ResultsPageViewModel
+@{
+    ViewData["Title"] = "Results entry";
+}
+<h1 class="mb-1">Results entry</h1>
+<p class="text-muted mb-3">@Model.Event.EventName &middot; @Display.Date(Model.Event.EventDate)</p>
+
+@if (!Model.EventHasFinished)
+{
+    <div class="alert alert-info">Results can be captured once the event date has passed.</div>
+}
+
+@if (Model.Rows.Count == 0)
+{
+    <div class="empty-state">There are no confirmed participants for this event.</div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table rd-table align-middle">
+            <thead>
+                <tr><th>Participant</th><th>Category</th><th>Finish time (hh:mm:ss)</th><th>Overall position</th><th>Category position</th><th></th></tr>
+            </thead>
+            <tbody>
+                @foreach (var row in Model.Rows)
+                {
+                    var formId = "result-" + row.Enrolment.EnrolmentId;
+                    <tr>
+                        <td><strong>@row.Enrolment.ParticipantName</strong></td>
+                        <td>@row.Enrolment.CategoryName</td>
+                        <td>
+                            <input form="@formId" name="FinishTime" class="form-control form-control-sm" placeholder="00:24:15"
+                                   value="@(row.Result?.FinishTime != null ? Display.FinishTime(row.Result.FinishTime) : "")" disabled="@(!Model.EventHasFinished)" />
+                        </td>
+                        <td>
+                            <input form="@formId" name="OverallPosition" type="number" min="1" class="form-control form-control-sm"
+                                   value="@row.Result?.OverallPosition" disabled="@(!Model.EventHasFinished)" />
+                        </td>
+                        <td>
+                            <input form="@formId" name="CategoryPosition" type="number" min="1" class="form-control form-control-sm"
+                                   value="@row.Result?.CategoryPosition" disabled="@(!Model.EventHasFinished)" />
+                        </td>
+                        <td class="text-end text-nowrap">
+                            <form id="@formId" asp-controller="Organiser" asp-action="SaveResult" method="post" class="d-inline">
+                                <input type="hidden" name="EventId" value="@Model.Event.EventId" />
+                                <input type="hidden" name="EnrolmentId" value="@row.Enrolment.EnrolmentId" />
+                                <input type="hidden" name="ResultId" value="@row.Result?.ResultId" />
+                                <button type="submit" class="btn rd-btn btn-sm" disabled="@(!Model.EventHasFinished)">@(row.Result == null ? "Publish" : "Update")</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+<a asp-action="Events" class="btn btn-outline-secondary mt-3">&larr; Back to events</a>

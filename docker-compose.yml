@@ -1,0 +1,45 @@
+# Starts the whole RaceDay system with one command:
+#   docker compose up --build
+# Then open http://localhost:5090
+
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "${SA_PASSWORD:-RaceDay_Strong_2026}"
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P \"$$MSSQL_SA_PASSWORD\" -Q \"SELECT 1\" || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 20s
+    volumes:
+      - sqldata:/var/opt/mssql
+
+  api:
+    build: ./RaceDay.Api
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: on-failure
+    environment:
+      # Development = create the database tables and seed the demo accounts on start-up.
+      ASPNETCORE_ENVIRONMENT: "Development"
+      ConnectionStrings__DefaultConnection: "Server=db;Database=RaceDayApiDB;User Id=sa;Password=${SA_PASSWORD:-RaceDay_Strong_2026};TrustServerCertificate=True;MultipleActiveResultSets=true"
+      AzureBlob__ConnectionString: "${AZURE_STORAGE_CONNECTION_STRING:-}"
+      AzureBlob__ContainerName: "${AZURE_BLOB_CONTAINER:-raceday-images}"
+    ports:
+      - "5081:8080"   # Swagger: http://localhost:5081/swagger
+
+  web:
+    build: ./RaceDay.Web
+    depends_on:
+      - api
+    environment:
+      ApiBaseUrl: "http://api:8080"
+    ports:
+      - "5090:8080"   # The RaceDay website: http://localhost:5090
+
+volumes:
+  sqldata:

@@ -1,0 +1,9 @@
+@model ProblemViewModel
+@{
+    ViewData["Title"] = "Something went wrong";
+}
+<div class="empty-state">
+    <h2>Oops</h2>
+    <p>@Model.Message</p>
+    <a asp-controller="Home" asp-action="Index" class="btn rd-btn">Back to events</a>
+</div>
