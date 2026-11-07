@@ -1,0 +1,37 @@
+name: CI - Build and Test
+
+on: [push, pull_request, workflow_dispatch]
+
+jobs:
+  build:
+    name: Build API and MVC, run unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Show repository files
+        run: find . -maxdepth 3 -not -path "./.git/*" | sort
+
+      - name: Build API
+        run: |
+          API=$(find . -name "RaceDay.Api.csproj" -not -path "*/Part2-API/*" | head -n 1)
+          echo "Building $API"
+          dotnet build "$API" --configuration Release
+
+      - name: Build MVC
+        run: |
+          WEB=$(find . -name "RaceDay.Web.csproj" | head -n 1)
+          echo "Building $WEB"
+          dotnet build "$WEB" --configuration Release
+
+      - name: Run unit tests
+        run: |
+          TESTS=$(find . -name "RaceDay.Tests.csproj" -not -path "*/Part2-API/*" | head -n 1)
+          echo "Testing $TESTS"
+          dotnet test "$TESTS" --configuration Release --verbosity normal
