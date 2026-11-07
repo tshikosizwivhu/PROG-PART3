@@ -16,41 +16,10 @@ YouTube (unlisted): **PASTE YOUR YOUTUBE LINK HERE**
 
 The video demonstrates the running application, the MVC structure, Azure Blob Storage integration and the Docker setup.
 
-## CI/CD: successful green build
-
-The GitHub Actions workflow (`.github/workflows/ci.yml`) runs on every push and pull request. It:
-
-1. builds the Part 2 API and runs its unit tests,
-2. builds the Part 3 API and MVC project and runs all unit tests,
-3. builds the Docker images for the API and the MVC application.
-
-![Green build](docs/ci-green-build.png)
 
 ---
 
-# Part 3: RaceDay MVC web application
-
-## Contents
-
-1. [Architecture](#architecture)
-2. [Prerequisites](#prerequisites)
-3. [Run with Docker (single command)](#run-with-docker-single-command)
-4. [Run in Visual Studio](#run-in-visual-studio)
-5. [Azure Blob Storage setup](#azure-blob-storage-setup)
-6. [Demo accounts](#demo-accounts)
-7. [The two roles and their pages](#the-two-roles-and-their-pages)
-8. [Authentication and role-based navigation](#authentication-and-role-based-navigation)
-9. [Project structure](#project-structure)
-10. [Unit tests](#unit-tests)
-11. [Troubleshooting](#troubleshooting)
-
-## Architecture
-
-```
-Browser --> RaceDay.Web (MVC, port 5090) --> RaceDay.Api (port 5081 in Docker, 5080 locally) --> SQL Server
-                                                   |
-                                                   +--> Azure Blob Storage (images)
-```
+``
 
 - **RaceDay.Web** (MVC) contains no database access and no business logic. Every data operation is an HTTP call to the API through one class, `Services/ApiClient.cs`.
 - **RaceDay.Api** is the Part 2 API, extended with Azure Blob Storage for event banners and profile pictures.
